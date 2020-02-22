@@ -1,0 +1,22 @@
+---
+- name: "Update templates"
+  template:
+    src:  "{{ item.src | default((item.dest | basename ()) + '.j2')}}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - dest:  "/etc/sysconfig/kubelet"
+  notify: "kubelet-restart"
+  when:
+    - "kubelet is defined"
+  tags:
+    - "kubelet"
+- name: "Start and enable kubelet"
+  systemd:
+    name: "kubelet"
+    state: "started"
+    enabled: "yes"
+    daemon_reload: "yes"
+  when:
+    - "kubelet is defined"
+  tags:
+    - "kubelet"

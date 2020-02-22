@@ -1,0 +1,7 @@
+---
+- name: "Restart Kubelet"
+  systemd:
+    daemon_reload: "yes"
+    name:          "kubelet.service"
+    state:         "restarted"
+  listen: "kubelet-restart"
