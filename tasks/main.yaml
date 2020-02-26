@@ -1,10 +1,17 @@
 ---
+- name: "Fail if OS/Architecture is not supported"
+  fail:
+    msg: "Installing kubelet on {{ (ansible_os_family | lower) + '_' + (ansible_architecture | lower) }} is unsupported."
+  when:
+    - "(kubelet_templates | default({}))[(ansible_os_family | lower) + '_' + (ansible_architecture | lower)] is not defined"
+    - "kubelet is defined"
+  tags:
+    - "kubelet"
 - name: "Update templates"
   template:
     src:  "{{ item.src | default((item.dest | basename ()) + '.j2')}}"
     dest: "{{ item.dest }}"
-  with_items:
-    - dest:  "/etc/sysconfig/kubelet"
+  with_items: "{{ kubelet_templates[(ansible_os_family | lower) + '_' + (ansible_architecture | lower)] }}"
   notify: "kubelet-restart"
   when:
     - "kubelet is defined"
