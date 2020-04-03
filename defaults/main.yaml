@@ -2,7 +2,5 @@
 kubelet_templates:
   debian: &debian
     - dest:  "/etc/default/kubelet"
-  redhat: &redhat
-    - dest:  "/etc/sysconfig/kubelet"
   debian_armv7l: *debian
-  redhat_x86_64: *redhat
+  debian_x86_64: *debian
